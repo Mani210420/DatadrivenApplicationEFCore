@@ -1,0 +1,14 @@
+Setup of Databse Context
+
+First write the models
+Then install EntityFrameworkCore.SqlServer, EntityFrameworkCore.Tools
+Then add connection string in appsetting.json
+After that add DbContext in program.cs
+
+If we want to make any changes in model and then want to see same changes in Db we need to do migration
+add-migration<nameOfMigration>
+update-database
+Thus a local db is created.
+
+Now as we have empty database we can start by adding data to it initially.
+We can write a seed method to achieve this.
