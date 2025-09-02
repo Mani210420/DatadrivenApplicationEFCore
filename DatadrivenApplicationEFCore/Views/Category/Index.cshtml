@@ -1,0 +1,32 @@
+﻿@model CategoryListViewModel
+
+<h2>Categories</h2>
+
+<hr />
+
+@if (!(Model.Categories?.Any() ?? false))
+{
+    <tr><td colspan="3" class="text-center">No Categories present</td></tr>
+}
+else
+{
+    <table class="table table-bordered table-condensed">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>DateAdded</th>
+            <th>Actions</th>
+        </tr>
+        @foreach(var category  in Model.Categories)
+        {
+            <tr>
+                <td>@category.CategoryId</td>
+                <td>@category.Name</td>
+                <td>@category.DateAdded.ToShortDateString()</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@category.CategoryId">Details</a>
+                </td>
+            </tr>
+        }
+    </table>
+}

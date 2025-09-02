@@ -1,0 +1,55 @@
+﻿@model Category
+
+<h2>Details of category @Model.Name</h2>
+<hr />
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            <label asp-for="CategoryId"></label>
+        </dt>
+        <dd class="col-sm-10">
+            @Model.CategoryId
+        </dd>
+        <dt class="col-sm-2">
+            <label asp-for="Name"></label>
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Name
+        </dd>
+        <dt class="col-sm-2">
+            <label asp-for="Description"></label>
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Description
+        </dd>
+        <dt class="col-sm-2">
+            <label asp-for="DateAdded"></label>
+        </dt>
+        <dd class="col-sm-10">
+            @Model.DateAdded.ToShortDateString()
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Cakes)
+        </dt>
+        <dd class="col-sm-10">
+            <table class="table">
+                <tr>
+                    <th>Cake Name</th>
+                    <th>Price</th>
+                </tr>
+                @foreach(var cake in Model.Cakes)
+                {
+                    <tr>
+                        <td>
+                            @cake.Name
+                        </td>
+                        <td>
+                            @cake.Price
+                        </td>
+                    </tr>
+                }
+            </table>
+        </dd>
+    </dl>
+</div>

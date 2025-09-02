@@ -1,0 +1,106 @@
+﻿@model Cake
+
+<h2>Details for @Model.Name</h2>
+<hr />
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            <label asp-for="CakeId"></label>
+        </dt>
+        <dd class="col-sm-10">
+            @Model.CakeId
+        </dd>
+        <dt class="col-sm-2">
+            <label asp-for="Name"></label>
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Name
+        </dd>
+        <dt class="col-sm-2">
+            <label asp-for="ShortDescription"></label>
+        </dt>
+        <dd class="col-sm-10">
+            @Model.ShortDescription
+        </dd>
+        <dt class="col-sm-2">
+            <label asp-for="LongDescription"></label>
+        </dt>
+        <dd class="col-sm-10">
+            @Model.LongDescription
+        </dd>
+        <dt class="col-sm-2">
+            <label asp-for="Price"></label>
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Price
+        </dd>
+        <dt class="col-sm-2">
+            <label asp-for="AllergyInfo"></label>
+        </dt>
+        <dd class="col-sm-10">
+            @Model.AllergyInfo
+        </dd>
+
+        <dt class="col-sm-2">
+            <label asp-for="IsCakeOfTheWeek"></label>
+        </dt>
+        <dd class="col-sm-10">
+            <input type="checkbox" checked="@Model.IsCakeOfTheWeek" disabled />
+        </dd>
+        <dt class="col-sm-2">
+            <label asp-for="InStock"></label>
+        </dt>
+        <dd class="col-sm-10">
+            @Model.InStock
+        </dd>
+        <dt class="col-sm-2">
+            <label asp-for="Category.Name"></label>
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Category.Name
+        </dd>
+        @if (Model.Ingredients.Count > 0)
+        {
+            <dt class="col-sm-2">
+                Ingredients in this pie
+            </dt>
+            <dd class="col-sm-10">
+                <table class="table">
+                    <tr>
+                        <th>Ingredient name</th>
+                        <th>Quantity</th>
+                    </tr>
+                    @foreach (var ingredient in Model.Ingredients)
+                    {
+                        <tr>
+                            <td>
+                                @ingredient.Name
+                            </td>
+                            <td>
+                                @ingredient.Quantity
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </dd>
+        }
+
+        <dt class="col-sm-2">
+            <label asp-for="ImageThumbnail"></label>
+        </dt>
+        <dd class="col-sm-10">
+            <img src="@Model.ImageThumbnail" width="300" height="150" />
+        </dd>
+        <dt class="col-sm-2">
+            <label asp-for="ImageUrl"></label>
+        </dt>
+        <dd class="col-sm-10">
+            <img src="@Model.ImageUrl" width="300" height="150" />
+
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-controller="Cake" asp-action="Index">Back to overview</a>
+</div>
