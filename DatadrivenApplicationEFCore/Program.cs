@@ -1,4 +1,5 @@
 using DatadrivenApplicationEFCore.Models;
+using DatadrivenApplicationEFCore.Models.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +9,9 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<DatadrivenApplicationDbContext>(options =>
  options.UseSqlServer(builder.Configuration.GetConnectionString("DatadrivenApplicationDbContextConnection")));
+
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICakeRepository, CakeRepository>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

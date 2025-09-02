@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Cake>
+<h2>Cakes</h2>
+<hr />
+
+@if(!Model.Any())
+{
+    <tr><td colspan="3" class="text-center">No Cakes at this point</td></tr>
+}
+else
+{
+     <table class="table table-condensed table-bordered">
+        <tr>
+            <th>
+                Id
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Price
+            </th>
+            <th>Actions</th>
+        </tr>
+        @foreach(var cake in Model)
+        {
+            <tr>
+                <td>@cake.CakeId</td>
+                <td>@cake.Name</td>
+                <td>@cake.Price</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@cake.CakeId">Details</a>
+                </td>
+            </tr>
+        }
+    </table>
+}
