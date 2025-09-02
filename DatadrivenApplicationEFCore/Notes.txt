@@ -1,7 +1,9 @@
+Day-1
+
 Setup of Databse Context
 
 First write the models
-Then install EntityFrameworkCore.SqlServer, EntityFrameworkCore.Tools
+Then install EntityFrameworkCore.SqlServer, EntityFrameworkCore.Tools (By using PMC)
 Then add connection string in appsetting.json
 After that add DbContext in program.cs
 
@@ -12,3 +14,10 @@ Thus a local db is created.
 
 Now as we have empty database we can start by adding data to it initially.
 We can write a seed method to achieve this.
+
+Day-2
+
+Now we are having a Db context. We need repositories to fetch the data.
+Created repository class and an interface for those classes.
+In Repository class we will get the database context in construtor and 
+from now on we will use repository class everywhere
