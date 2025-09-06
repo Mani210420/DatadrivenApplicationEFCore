@@ -6,5 +6,6 @@ namespace DatadrivenApplicationEFCore.Models.Repositories
     {
         Task<IEnumerable<Cake>> GetAllCakesAsync();
         Task<Cake?> GetCakeByIdAsync(int id);
+        Task<int> AddCakeAsync(Cake cake);
     }
 }
