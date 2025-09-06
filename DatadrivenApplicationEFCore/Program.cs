@@ -12,6 +12,7 @@ builder.Services.AddDbContext<DatadrivenApplicationDbContext>(options =>
 
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICakeRepository, CakeRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

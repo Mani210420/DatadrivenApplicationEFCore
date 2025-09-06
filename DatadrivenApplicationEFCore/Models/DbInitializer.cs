@@ -104,11 +104,36 @@
             }
             context.SaveChanges();
 
-            /*if(!context.Orders.Any())
+            if(!context.Orders.Any())
             {
-                //context.AddRange 
+                context.Orders.AddRange(
+                    new Order()
+                    {
+                        FirstName = "K",
+                        LastName = "M",
+                        AddressLine1 = "Abc",
+                        City = "de",
+                        Country = "fg",
+                        Email = "testc@gmail.com",
+                        PhoneNumber = "100",
+                        State = "hi",
+                        ZipCode = "111",
+                        OrderPlaced = DateTime.Now,
+                        OrderStatus = OrderStatus.OutForDelivery,
+                        OrderTotal = 12,
+                        OrderDetails = new List<OrderDetail>()
+                        {
+                            new OrderDetail()
+                            {
+                                Quantity = 1,
+                                CakeId = 1,
+                                Price = 20.20M
+                            }
+                        }
+                    }
+                ); 
             }
-            context.SaveChanges();*/
+            context.SaveChanges();
         }
 
         public static Dictionary<string, Category>? categories;
