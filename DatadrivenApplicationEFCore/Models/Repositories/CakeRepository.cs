@@ -15,12 +15,12 @@ namespace DatadrivenApplicationEFCore.Models.Repositories
         
         public async Task<IEnumerable<Cake>> GetAllCakesAsync()
         {
-            return await _context.Cakes.OrderBy(c => c.CakeId).ToListAsync();
+            return await _context.Cakes.OrderBy(c => c.CakeId).AsNoTracking().ToListAsync();
         }
 
         public async Task<Cake?> GetCakeByIdAsync(int id)
         {
-            return await _context.Cakes.Include(c => c.Ingredients).Include(c => c.Category).FirstOrDefaultAsync(c => c.CakeId == id);
+            return await _context.Cakes.Include(c => c.Ingredients).Include(c => c.Category).AsNoTracking().FirstOrDefaultAsync(c => c.CakeId == id);
         }
 
         public async Task<int> AddCakeAsync(Cake cake)

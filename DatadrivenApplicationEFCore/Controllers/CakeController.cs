@@ -1,4 +1,5 @@
-﻿using DatadrivenApplicationEFCore.Models.Repositories;
+﻿using DatadrivenApplicationEFCore.Models;
+using DatadrivenApplicationEFCore.Models.Repositories;
 using DatadrivenApplicationEFCore.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -30,12 +31,49 @@ namespace DatadrivenApplicationEFCore.Controllers
 
         public async Task<IActionResult> Add() 
         {
-            var categories =await _categoryRepository.GetAllCategoriesAsync();
-            IEnumerable<SelectListItem> selectListItems = new SelectList(categories, "CategoryId", "Name", null);
-            var cakeAddViewModel = new CakeAddViewModel()
+            try
             {
-                Categories = selectListItems
-            };
+                var categories = await _categoryRepository.GetAllCategoriesAsync();
+                IEnumerable<SelectListItem> selectListItems = new SelectList(categories, "CategoryId", "Name", null);
+                var cakeAddViewModel = new CakeAddViewModel()
+                {
+                    Categories = selectListItems
+                };
+                return View(cakeAddViewModel);
+            }
+            catch (Exception ex)
+            {
+                ViewData["ErrorMessage"] = $"There is an error: {ex.Message}";
+            }
+            return View(new CakeAddViewModel());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(CakeAddViewModel cakeAddViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var cake = new Cake()
+                {
+                    Name = cakeAddViewModel.Cake.Name,
+                    CategoryId = cakeAddViewModel.Cake.CategoryId,
+                    ShortDescription = cakeAddViewModel.Cake.ShortDescription,
+                    LongDescription = cakeAddViewModel.Cake.LongDescription,
+                    Price = cakeAddViewModel.Cake.Price,
+                    AllergyInfo = cakeAddViewModel.Cake.AllergyInfo,
+                    ImageThumbnail = cakeAddViewModel.Cake.ImageThumbnail,
+                    ImageUrl = cakeAddViewModel.Cake.ImageUrl,
+                    InStock = cakeAddViewModel.Cake.InStock,
+                    IsCakeOfTheWeek = cakeAddViewModel.Cake.IsCakeOfTheWeek,
+                };
+                await _cakeRepository.AddCakeAsync(cake);
+                return RedirectToAction(nameof(Index));
+            }
+
+            var allCategories = await _categoryRepository.GetAllCategoriesAsync();
+
+            IEnumerable<SelectListItem> selectListItems = new SelectList(allCategories, "CategoryId", "Name", null);
+            cakeAddViewModel.Categories = selectListItems;
             return View(cakeAddViewModel);
         }
     }
