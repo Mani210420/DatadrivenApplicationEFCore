@@ -1,4 +1,5 @@
-﻿using DatadrivenApplicationEFCore.Models.Repositories;
+﻿using DatadrivenApplicationEFCore.Models;
+using DatadrivenApplicationEFCore.Models.Repositories;
 using DatadrivenApplicationEFCore.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,6 +30,62 @@ namespace DatadrivenApplicationEFCore.Controllers
 
             var selectedCategory =await _categoryRepository.GetCategoryByIdAsync(id.Value);
             return View(selectedCategory);
+        }
+
+        public IActionResult Add()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add([Bind("Name, Description, DateAdded")] Category category)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    await _categoryRepository.AddCategoryAsync(category);
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (Exception ex) 
+            {
+                ModelState.AddModelError("", $"Adding category failed, Please try again.. Error: {ex.Message}");
+            }
+            return View(category);
+        }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var selectCategory =await _categoryRepository.GetCategoryByIdAsync(id.Value);
+            return View(selectCategory);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Category category)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    await _categoryRepository.UpdateCategory(category);
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Updating category failed please try again! error:{ex.Message}");
+            }
+
+            return View(category);
         }
     }
 }

@@ -25,8 +25,13 @@ else
                 <td>@category.DateAdded.ToShortDateString()</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@category.CategoryId">Details</a>
+                    <a asp-action="Edit" asp-route-id="@category.CategoryId">Update</a>
                 </td>
             </tr>
         }
     </table>
 }
+
+<p>
+    <a class="btn btn-primary" asp-action="Add">Add new Category</a>
+</p>

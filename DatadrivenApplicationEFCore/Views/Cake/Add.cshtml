@@ -1,0 +1,69 @@
+﻿@model CakeAddViewModel
+
+<h2>Create a new Cake</h2>
+<hr />
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <p class="text-danger">@ViewData["ErrorMessage"]</p>
+}
+
+<form method="post" asp-controller="Cake" asp-action="Add">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="Cake.Name" class="form-label"></label>
+        <input asp-for="Cake.Name" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cake.ShortDescription" class="form-label"></label>
+        <textarea asp-for="Cake.ShortDescription" class="form-control" rows="5" cols="50" style="resize: none;"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cake.LongDescription" class="form-label"></label>
+        <textarea asp-for="Cake.LongDescription" class="form-control" rows="5" cols="50" style="resize: none;"></textarea>
+    </div>
+
+
+    <div class="mb-3">
+        <label asp-for="Cake.AllergyInfo" class="form-label"></label>
+        <textarea asp-for="Cake.AllergyInfo" class="form-control" rows="5" cols="50" style="resize: none;"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cake.Price" class="form-label"></label>
+        <input asp-for="Cake.Price" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cake.ImageThumbnail" class="form-label"></label>
+        <input asp-for="Cake.ImageThumbnail" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cake.ImageUrl" class="form-label"></label>
+        <input asp-for="Cake.ImageUrl" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cake.IsCakeOfTheWeek" class="form-label"></label>
+        <input asp-for="Cake.IsCakeOfTheWeek" />
+    </div>
+
+   <div>
+       <label asp-for="Cake.InStock" class="form-label"></label>
+       <input asp-for="Cake.InStock" />
+   </div>
+
+   <div>
+       <label asp-for="Categories" class="form-label"></label>
+       <select asp-for="Cake.CategoryId" asp-items="Model.Categories"></select>
+   </div>
+
+    <input type="submit" value="Add Cake" class="btn btn-primary" />
+</form>
+
+<div>
+    <a asp-controller="Cake" asp-action="Index">Back to overview</a>
+</div>
