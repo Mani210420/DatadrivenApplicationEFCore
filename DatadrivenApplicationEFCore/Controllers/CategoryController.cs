@@ -72,7 +72,7 @@ namespace DatadrivenApplicationEFCore.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    await _categoryRepository.UpdateCategory(category);
+                    await _categoryRepository.UpdateCategoryAsync(category);
                     return RedirectToAction(nameof(Index));
                 }
                 else
