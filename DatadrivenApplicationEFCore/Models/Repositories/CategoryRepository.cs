@@ -24,6 +24,20 @@ namespace DatadrivenApplicationEFCore.Models.Repositories
             return await _context.SaveChangesAsync();
         }
 
+        public async Task<int> DeleteCategoryAsync(int id)
+        {
+            var categoryToDelete = await _context.Categories.FirstOrDefaultAsync( c => c.CategoryId == id);
+            if (categoryToDelete != null) 
+            {
+                _context.Categories.Remove(categoryToDelete);
+                return await _context.SaveChangesAsync();
+            }
+            else 
+            {
+                throw new ArgumentException($"The category cannot be deleted");
+            }
+        }
+
         public IEnumerable<Category> GetAllCategories()
         {
             return _context.Categories.OrderBy(c => c.CategoryId);
@@ -40,7 +54,7 @@ namespace DatadrivenApplicationEFCore.Models.Repositories
             return await _context.Categories.Include(c => c.Cakes).AsNoTracking().FirstOrDefaultAsync(c => c.CategoryId == id);
         }
 
-        public async Task<int> UpdateCategory(Category category)
+        public async Task<int> UpdateCategoryAsync(Category category)
         {
             bool sameCategoryExists =await _context.Categories.AnyAsync(c => c.Name == category.Name && c.CategoryId != category.CategoryId);
             if(sameCategoryExists)

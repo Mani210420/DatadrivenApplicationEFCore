@@ -76,5 +76,51 @@ namespace DatadrivenApplicationEFCore.Controllers
             cakeAddViewModel.Categories = selectListItems;
             return View(cakeAddViewModel);
         }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var allCategories = await _categoryRepository.GetAllCategoriesAsync();
+            IEnumerable<SelectListItem> selectListItems = new SelectList(allCategories, "CategoryId", "Name", null);
+
+            var selectedCake = await _cakeRepository.GetCakeByIdAsync(id.Value);
+            CakeEditViewModel cakeEditViewModel = new CakeEditViewModel()
+            {
+                Categories = selectListItems,
+                Cake = selectedCake
+            };
+            return View(cakeEditViewModel);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(CakeEditViewModel cakeEditViewModel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    await _cakeRepository.UpdateCakeAsync(cakeEditViewModel.Cake);
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex) 
+            {
+                ModelState.AddModelError("", $"Updating cake details failed.. Error: {ex.Message}");
+            }
+
+            var allCategories = await _categoryRepository.GetAllCategoriesAsync();
+            IEnumerable<SelectListItem> selectListItems = new SelectList(allCategories, "CategoryId", "Name", null);
+            cakeEditViewModel.Categories = selectListItems;
+            return View(cakeEditViewModel);
+        }
     }
 }

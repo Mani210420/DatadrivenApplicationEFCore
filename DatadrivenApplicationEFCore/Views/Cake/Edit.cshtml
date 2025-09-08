@@ -1,0 +1,77 @@
+﻿@model CakeEditViewModel
+
+<h2>Update pie @Model.Cake.Name</h2>
+<hr />
+
+<form method="post" asp-controller="Cake" asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Cake.CakeId" />
+
+    <div class="mb-3">
+        <label asp-for="Cake.Name" class="form-label"></label>
+        <input asp-for="Cake.Name" class="form-control" />
+        <span asp-validation-for="Cake.Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cake.ShortDescription" class="form-label"></label>
+        <textarea asp-for="Cake.ShortDescription" class="form-control" rows="5" cols="50" style="resize: none;"></textarea>
+        <span asp-validation-for="Cake.ShortDescription" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cake.LongDescription" class="form-label"></label>
+        <textarea asp-for="Cake.LongDescription" class="form-control" rows="5" cols="50" style="resize: none;"></textarea>
+        <span asp-validation-for="Cake.LongDescription" class="text-danger"></span>
+    </div>
+
+
+    <div class="mb-3">
+        <label asp-for="Cake.AllergyInfo" class="form-label"></label>
+        <textarea asp-for="Cake.AllergyInfo" class="form-control" rows="5" cols="50" style="resize: none;"></textarea>
+        <span asp-validation-for="Cake.AllergyInfo" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cake.Price" class="form-label"></label>
+        <input asp-for="Cake.Price" class="form-control" />
+        <span asp-validation-for="Cake.Price" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cake.ImageThumbnail" class="form-label"></label>
+        <input asp-for="Cake.ImageThumbnail" class="form-control" />
+        <span asp-validation-for="Cake.ImageThumbnail" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cake.ImageUrl" class="form-label"></label>
+        <input asp-for="Cake.ImageUrl" class="form-control" />
+        <span asp-validation-for="Cake.ImageUrl" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cake.IsCakeOfTheWeek" class="form-label"></label>
+        <input asp-for="Cake.IsCakeOfTheWeek" type="checkbox" />
+        <span asp-validation-for="Cake.IsCakeOfTheWeek" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Cake.InStock" class="form-label"></label>
+        <input asp-for="Cake.InStock" type="checkbox" />
+        <span asp-validation-for="Cake.InStock" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Categories" class="form-label"></label>
+        <select asp-for="Cake.CategoryId" asp-items="Model.Categories"></select>
+        <span asp-validation-for="Categories" class="text-danger"></span>
+    </div>
+
+    <input type="submit" value="Update Cake" class="btn btn-primary" />
+</form>
+
+<div>
+    <a asp-controller="Cake" asp-action="Index">Back to overview</a>
+</div>
+
