@@ -8,5 +8,6 @@ namespace DatadrivenApplicationEFCore.Models.Repositories
         Task<Cake?> GetCakeByIdAsync(int id);
         Task<int> AddCakeAsync(Cake cake);
         Task<int> UpdateCakeAsync(Cake cake);
+        Task<int> DeleteCakeAsync(int id);
     }
 }

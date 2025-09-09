@@ -122,5 +122,33 @@ namespace DatadrivenApplicationEFCore.Controllers
             cakeEditViewModel.Categories = selectListItems;
             return View(cakeEditViewModel);
         }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var selectedCake =await _cakeRepository.GetCakeByIdAsync(id);
+            return View(selectedCake);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if(id == null)
+            {
+                ViewData["ErrorMessage"] = "Deleting the cake failed, invalid ID!";
+                return View();
+            }
+            try
+            {
+                await _cakeRepository.DeleteCakeAsync(id.Value);
+                TempData["CakeDeleted"] = "Cake deleted successfully!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex) 
+            {
+                ViewData["ErrorMessage"] = $"Deleting the cake failed, please try again! Error: {ex.Message}";
+            }
+            var selectedCake = await _cakeRepository.GetCakeByIdAsync(id.Value);
+            return View(selectedCake);
+        }
     }
 }

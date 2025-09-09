@@ -26,6 +26,11 @@ namespace DatadrivenApplicationEFCore.Models.Repositories
 
         public async Task<int> DeleteCategoryAsync(int id)
         {
+            var cakesInCategory = _context.Cakes.Any(c => c.CategoryId == id);
+            if (cakesInCategory)
+            {
+                throw new Exception("Please delete all cakes in this category before deleting the category...");
+            }
             var categoryToDelete = await _context.Categories.FirstOrDefaultAsync( c => c.CategoryId == id);
             if (categoryToDelete != null) 
             {
