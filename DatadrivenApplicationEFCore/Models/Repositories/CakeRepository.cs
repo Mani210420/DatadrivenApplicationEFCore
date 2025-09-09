@@ -53,5 +53,19 @@ namespace DatadrivenApplicationEFCore.Models.Repositories
                 throw new ArgumentException($"Cake doesnt exists");
             }
         }
+
+        public async Task<int> DeleteCakeAsync(int id)
+        {
+            var selectedCake =await _context.Cakes.FirstOrDefaultAsync(c => c.CakeId==id);
+            if (selectedCake != null) 
+            {
+                _context.Cakes.Remove(selectedCake);
+                return await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new ArgumentException($"The cake to delete can't be found.");
+            }
+        }
     }
 }

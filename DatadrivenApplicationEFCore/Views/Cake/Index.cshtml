@@ -2,6 +2,12 @@
 <h2>Cakes</h2>
 <hr />
 
+@if (TempData["CakeDeleted"] != null)
+{
+    <p class="text-success">@TempData["CakeDeleted"]</p>
+}
+
+
 @if(!Model.Any())
 {
     <tr><td colspan="3" class="text-center">No Cakes at this point</td></tr>
@@ -30,6 +36,7 @@ else
                 <td>
                     <a asp-action="Details" asp-route-id="@cake.CakeId">Details</a>
                     <a asp-action="Edit" asp-route-id="@cake.CakeId">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@cake.CakeId">Delete</a>
                 </td>
             </tr>
         }

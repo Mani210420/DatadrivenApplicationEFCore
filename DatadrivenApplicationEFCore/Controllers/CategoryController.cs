@@ -87,5 +87,33 @@ namespace DatadrivenApplicationEFCore.Controllers
 
             return View(category);
         }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var selectedCategory =await _categoryRepository.GetCategoryByIdAsync(id);
+            return View(selectedCategory);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(Category? category)
+        {
+            if(category == null)
+            {
+                ViewData["ErrorMessage"] = "Delete failed invalid category";
+                return View();
+            }
+            try
+            {
+                await _categoryRepository.DeleteCategoryAsync(category.CategoryId);
+                TempData["CategoryDeleted"] = "Category deleted successfully";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ViewData["ErrorMessage"] = $"Please try again error: {ex.Message}";
+            }
+            var selectedCategory = await _categoryRepository.GetCategoryByIdAsync(category.CategoryId);
+            return View(selectedCategory);
+        }
     }
 }
