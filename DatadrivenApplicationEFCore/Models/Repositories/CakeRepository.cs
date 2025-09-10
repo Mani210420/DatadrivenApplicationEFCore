@@ -67,5 +67,64 @@ namespace DatadrivenApplicationEFCore.Models.Repositories
                 throw new ArgumentException($"The cake to delete can't be found.");
             }
         }
+
+        public async Task<int> GetAllCakesCountAsync()
+        {
+            var count = await _context.Cakes.CountAsync();
+            return count;
+        }
+
+        public async Task<IEnumerable<Cake>> GetCakesPagedAsync(int? pageNumber, int pageSize)
+        {
+            IQueryable<Cake> cakes = from c in _context.Cakes
+                                     select c;
+            pageNumber ??= 1;
+            cakes = cakes.Skip((pageNumber.Value - 1) * pageSize).Take(pageSize);
+            return await cakes.AsNoTracking().ToListAsync();
+        }
+
+        public async Task<IEnumerable<Cake>> GetCakesSortedAndPagedAsync(string sortBy, int? pageNumber, int pageSize)
+        {
+            IQueryable<Cake> cakes = from c in _context.Cakes
+                                     select c;
+            switch(sortBy)
+            {
+                case "name_desc":
+                    cakes = cakes.OrderByDescending(c => c.Name); break;
+                case "name":
+                    cakes = cakes.OrderBy(c => c.Name); break;
+                case "id_desc":
+                    cakes = cakes.OrderByDescending(c => c.CakeId); break;
+                case "id":
+                    cakes = cakes.OrderBy(c => c.CakeId); break;
+                case "price_desc":
+                    cakes = cakes.OrderByDescending(c => c.Price); break;
+                case "price":
+                    cakes = cakes.OrderBy(c => c.Price); break;
+            }
+
+            pageNumber ??= 1;
+
+            cakes = cakes.Skip((pageNumber.Value - 1) * pageSize).Take(pageSize);
+            return await cakes.AsNoTracking().ToListAsync();
+        }
+
+        public async Task<IEnumerable<Cake>> SearchCakes(string searchQuery, int? categoryId)
+        {
+            IQueryable<Cake> cakes = from c in _context.Cakes
+                                     select c;
+
+            if(!string.IsNullOrEmpty(searchQuery))
+            {
+                cakes = cakes.Where(c => c.Name.Contains(searchQuery) || c.ShortDescription.Contains(searchQuery) || c.LongDescription.Contains(searchQuery));
+            }
+
+            if(categoryId != null)
+            {
+                cakes = _context.Cakes.Where(c => c.CategoryId == categoryId);
+            }
+
+            return await cakes.ToListAsync();
+        }
     }
 }

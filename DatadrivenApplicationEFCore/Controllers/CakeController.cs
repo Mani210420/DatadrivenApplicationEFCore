@@ -1,5 +1,6 @@
 ﻿using DatadrivenApplicationEFCore.Models;
 using DatadrivenApplicationEFCore.Models.Repositories;
+using DatadrivenApplicationEFCore.Utilities;
 using DatadrivenApplicationEFCore.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -29,7 +30,7 @@ namespace DatadrivenApplicationEFCore.Controllers
             return View(cake);
         }
 
-        public async Task<IActionResult> Add() 
+        public async Task<IActionResult> Add()
         {
             try
             {
@@ -79,7 +80,7 @@ namespace DatadrivenApplicationEFCore.Controllers
 
         public async Task<IActionResult> Edit(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -112,7 +113,7 @@ namespace DatadrivenApplicationEFCore.Controllers
                     return BadRequest();
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Updating cake details failed.. Error: {ex.Message}");
             }
@@ -125,14 +126,14 @@ namespace DatadrivenApplicationEFCore.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            var selectedCake =await _cakeRepository.GetCakeByIdAsync(id);
+            var selectedCake = await _cakeRepository.GetCakeByIdAsync(id);
             return View(selectedCake);
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 ViewData["ErrorMessage"] = "Deleting the cake failed, invalid ID!";
                 return View();
@@ -143,12 +144,66 @@ namespace DatadrivenApplicationEFCore.Controllers
                 TempData["CakeDeleted"] = "Cake deleted successfully!";
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 ViewData["ErrorMessage"] = $"Deleting the cake failed, please try again! Error: {ex.Message}";
             }
             var selectedCake = await _cakeRepository.GetCakeByIdAsync(id.Value);
             return View(selectedCake);
+        }
+
+        private int pageSize = 2;
+
+        public async Task<IActionResult> IndexPaging(int? pageNumber)
+        {
+            var cakes = await _cakeRepository.GetCakesPagedAsync(pageNumber, pageSize);
+            pageNumber ??= 1;
+
+            var count =await _cakeRepository.GetAllCakesCountAsync();
+
+            return View(new PagedList<Cake>(cakes.ToList(), pageNumber.Value, pageSize, count));
+        }
+
+        public async Task<IActionResult> IndexPagingSorting(string sortBy, int? pageNumber)
+        {
+            ViewData["CurrentSort"] = sortBy;
+
+            ViewData["IdSortParam"] = String.IsNullOrEmpty(sortBy) || sortBy == "id_desc" ? "id" : "id_desc";
+            ViewData["NameSortParam"] = sortBy == "name" ? "name_desc" : "name";
+            ViewData["PriceSortParam"] = sortBy == "price" ? "price_desc" : "price";
+
+            pageNumber ??= 1;
+
+            var cakes = await _cakeRepository.GetCakesSortedAndPagedAsync(sortBy, pageNumber,pageSize);
+            var count = await _cakeRepository.GetAllCakesCountAsync();
+
+            return(View(new PagedList<Cake>(cakes.ToList(),pageNumber.Value, pageSize, count)));
+        }
+
+        public async Task<IActionResult> Search(string? searchQuery, int?  searchCategory)
+        {
+            var allCategories = await _categoryRepository.GetAllCategoriesAsync();
+
+            IEnumerable<SelectListItem> selectListItems = new SelectList(allCategories, "CategoryId", "Name", null);
+
+            if(searchQuery != null)
+            {
+                var cakes =await _cakeRepository.SearchCakes(searchQuery, searchCategory);
+                return View(new CakeSearchViewModel()
+                {
+                    Cakes = cakes,
+                    Categories = selectListItems,
+                    SearchCategory = searchCategory,
+                    SearchQuery = searchQuery
+                });
+            }
+            return View(new CakeSearchViewModel() 
+            {
+                Categories = selectListItems,
+                Cakes = new List<Cake>(),
+                SearchCategory = null,
+                SearchQuery = String.Empty
+            });
         }
     }
 }
