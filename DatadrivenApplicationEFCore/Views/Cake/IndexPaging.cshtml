@@ -1,0 +1,60 @@
+﻿@using DatadrivenApplicationEFCore.Utilities
+
+@model PagedList<Cake>
+
+<h2>Cakes</h2>
+<hr />
+
+@if (!Model.Any())
+{
+    <p>No results</p>
+}
+else
+{
+    <table class="table table-condensed table-bordered">
+        <tr>
+
+            <th>
+                Id
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Price
+            </th>
+            <th>Actions</th>
+        </tr>
+        @foreach (var cake in Model)
+        {
+
+            <tr>
+                <td>@cake.CakeId</td>
+                <td>@cake.Name</td>
+                <td>@cake.Price</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@cake.CakeId">Details</a>
+                    <a asp-action="Edit" asp-route-id="@cake.CakeId">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@cake.CakeId">Delete</a>
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+@{
+    var previousButtonDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextButtonDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="IndexPaging" asp-route-pageNumber="@(Model.PageIndex - 1)" class="btn btn-default @previousButtonDisabled">
+    Previous
+</a>
+<a asp-action="IndexPaging" asp-route-pageNumber="@(Model.PageIndex + 1)" class="btn btn-default @nextButtonDisabled">
+    Next
+</a>
+
+
+<p>
+    <a class="btn btn-primary" asp-action="Add">Add new Cake</a>
+</p>
