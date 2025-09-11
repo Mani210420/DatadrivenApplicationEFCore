@@ -1,14 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace DatadrivenApplicationEFCore.Models.Repositories
 {
     public class CategoryRepository : ICategoryRepository
     {
         private readonly DatadrivenApplicationDbContext _context;
+        private IMemoryCache _memoryCache;
+        private const string AllCategoriesCacheName = "AllCategories";
 
-        public CategoryRepository(DatadrivenApplicationDbContext context)
+        public CategoryRepository(DatadrivenApplicationDbContext context, IMemoryCache memoryCache)
         {
             _context = context;
+            _memoryCache = memoryCache;
         }
 
         public async Task<int> AddCategoryAsync(Category category)
@@ -21,7 +25,10 @@ namespace DatadrivenApplicationEFCore.Models.Repositories
             }
 
             _context.Categories.Add(category);
-            return await _context.SaveChangesAsync();
+            int result = await _context.SaveChangesAsync();
+
+            _memoryCache.Remove(AllCategoriesCacheName);
+            return result;
         }
 
         public async Task<int> DeleteCategoryAsync(int id)
@@ -51,7 +58,17 @@ namespace DatadrivenApplicationEFCore.Models.Repositories
         public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
         {
             //throw new Exception("Slow Database");
-            return await _context.Categories.OrderBy(c => c.CategoryId).AsNoTracking().ToListAsync();
+            //return await _context.Categories.OrderBy(c => c.CategoryId).AsNoTracking().ToListAsync();
+            List<Category> allCategories = null;
+            if(! _memoryCache.TryGetValue(AllCategoriesCacheName, out allCategories))
+            {
+                allCategories = await _context.Categories.AsNoTracking().OrderBy(c => c.CategoryId).ToListAsync();
+                var cacheEntryOptions = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(60));
+
+                _memoryCache.Set(AllCategoriesCacheName, allCategories,cacheEntryOptions);
+            }
+
+            return allCategories;
         }
 
         public async Task<Category?> GetCategoryByIdAsync(int id)
