@@ -100,5 +100,24 @@ namespace DatadrivenApplicationEFCore.Models.Repositories
                 throw new ArgumentException("Category not found");
             }
         }
+
+        public async Task<int> UpdateCategoryNamesAsync(List<Category> categories)
+        {
+            foreach (var category in categories)
+            {
+                var categoryToUpdate =await _context.Categories.FirstOrDefaultAsync(c => c.CategoryId == category.CategoryId);
+                if (categoryToUpdate != null)
+                {
+                    categoryToUpdate.Name = category.Name;
+                    _context.Categories.Update(categoryToUpdate);
+                }
+            }
+
+            int res = await _context.SaveChangesAsync();
+
+            _memoryCache.Remove(AllCategoriesCacheName);
+
+            return res;
+        }
     }
 }
