@@ -34,6 +34,7 @@ namespace DatadrivenApplicationEFCore.Models.Repositories
             var selectedCake = await _context.Cakes.FirstOrDefaultAsync(c => c.CakeId == cake.CakeId);
             if (selectedCake != null) 
             {
+                _context.Entry(selectedCake).Property("RowVersion").OriginalValue = cake.RowVersion;
                 selectedCake.CategoryId = cake.CategoryId;
                 selectedCake.ShortDescription = cake.ShortDescription;
                 selectedCake.LongDescription = cake.LongDescription;
