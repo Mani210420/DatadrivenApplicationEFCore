@@ -45,5 +45,8 @@ namespace DatadrivenApplicationEFCore.Models
 
         [Display(Name = "Ingredients")]
         public ICollection<Ingredient>? Ingredients { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }

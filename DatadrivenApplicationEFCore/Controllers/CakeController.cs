@@ -4,6 +4,7 @@ using DatadrivenApplicationEFCore.Utilities;
 using DatadrivenApplicationEFCore.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace DatadrivenApplicationEFCore.Controllers
 {
@@ -98,7 +99,7 @@ namespace DatadrivenApplicationEFCore.Controllers
         }
 
 
-        [HttpPost]
+        /*[HttpPost]
         public async Task<IActionResult> Edit(CakeEditViewModel cakeEditViewModel)
         {
             try
@@ -122,6 +123,100 @@ namespace DatadrivenApplicationEFCore.Controllers
             IEnumerable<SelectListItem> selectListItems = new SelectList(allCategories, "CategoryId", "Name", null);
             cakeEditViewModel.Categories = selectListItems;
             return View(cakeEditViewModel);
+        }*/
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Cake cake)
+        {
+            var cakeToUpdate =await _cakeRepository.GetCakeByIdAsync(cake.CakeId);
+            try
+            {
+                if (cakeToUpdate == null)
+                {
+                    ModelState.AddModelError(string.Empty, "The cake you want to update doesn't exist or was already deleted by someone else.");
+                }
+                if (ModelState.IsValid)
+                {
+                    await _cakeRepository.UpdateCakeAsync(cake);
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                var exceptionCake = ex.Entries.Single();
+                var entityValues = (Cake)exceptionCake.Entity;
+                var databaseCake = exceptionCake.GetDatabaseValues();
+
+                if (databaseCake == null)
+                {
+                    ModelState.AddModelError(string.Empty, "The cake was already deleted by another user.");
+                }
+                else
+                {
+                    var databaseValues = (Cake)databaseCake.ToObject();
+                    if (databaseValues.Name != entityValues.Name)
+                    {
+                        ModelState.AddModelError("Cake.Name", $"Current value: {databaseValues.Name}");
+                    }
+                    if (databaseValues.Price != entityValues.Price)
+                    {
+                        ModelState.AddModelError("Cake.Price", $"Current value: {databaseValues.Price:c}");
+                    }
+                    if (databaseValues.ShortDescription != entityValues.ShortDescription)
+                    {
+                        ModelState.AddModelError("Cake.ShortDescription", $"Current value: {databaseValues.ShortDescription}");
+                    }
+                    if (databaseValues.LongDescription != entityValues.LongDescription)
+                    {
+                        ModelState.AddModelError("Cake.LongDescription", $"Current value: {databaseValues.LongDescription}");
+                    }
+                    if (databaseValues.AllergyInfo != entityValues.AllergyInfo)
+                    {
+                        ModelState.AddModelError("Cake.AllergyInfo", $"Current value: {databaseValues.AllergyInfo}");
+                    }
+                    if (databaseValues.ImageThumbnail != entityValues.ImageThumbnail)
+                    {
+                        ModelState.AddModelError("Cake.ImageThumbnail", $"Current value: {databaseValues.ImageThumbnail}");
+                    }
+                    if (databaseValues.ImageUrl != entityValues.ImageUrl)
+                    {
+                        ModelState.AddModelError("Cake.ImageUrl", $"Current value: {databaseValues.ImageUrl}");
+                    }
+                    if (databaseValues.IsCakeOfTheWeek != entityValues.IsCakeOfTheWeek)
+                    {
+                        ModelState.AddModelError("Cake.IsCakeOfTheWeek", $"Current value: {databaseValues.IsCakeOfTheWeek}");
+                    }
+                    if (databaseValues.InStock != entityValues.InStock)
+                    {
+                        ModelState.AddModelError("Cake.InStock", $"Current value: {databaseValues.InStock}");
+                    }
+                    if (databaseValues.CategoryId != entityValues.CategoryId)
+                    {
+                        ModelState.AddModelError("Cake.CategoryId", $"Current value: {databaseValues.CategoryId}");
+                    }
+
+                    ModelState.AddModelError(string.Empty, "The cake was modified already by another user. The database values are now shown. Hit Save again to store these values.");
+                    cakeToUpdate.RowVersion = databaseValues.RowVersion;
+
+                    ModelState.Remove("Cake.RowVersion");
+                }
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Updating the category failed, please try again! Error: {ex.Message}");
+            }
+
+            var allCategories = await _categoryRepository.GetAllCategoriesAsync();
+
+            IEnumerable<SelectListItem> selectListItems = new SelectList(allCategories, "CategoryId", "Name", null);
+
+            CakeAddViewModel cakeAddViewModel = new CakeAddViewModel()
+            {
+                Categories = selectListItems,
+                Cake = cakeToUpdate
+            };
+
+            return View( cakeAddViewModel );
         }
 
         public async Task<IActionResult> Delete(int id)

@@ -6,6 +6,7 @@
 <form method="post" asp-controller="Cake" asp-action="Edit">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="Cake.CakeId" />
+    <input type="hidden" asp-for="Cake.RowVersion" />
 
     <div class="mb-3">
         <label asp-for="Cake.Name" class="form-label"></label>
